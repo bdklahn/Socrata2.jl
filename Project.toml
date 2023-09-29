@@ -3,6 +3,13 @@ uuid = "0361e847-965f-43d1-8777-d9751d6fe310"
 authors = ["Brian D. Klahn"]
 version = "1.0.0-DEV"
 
+[deps]
+Arrow = "69666777-d1a9-59fb-9406-91d4454c9d45"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+
 [compat]
 julia = "1"
 
