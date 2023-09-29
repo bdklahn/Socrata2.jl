@@ -1,5 +1,11 @@
 module Socrata2
 
-# Write your package code here.
+using URIs
+
+export metadata_url
+
+hello_world() = "Hello World!"
+
+include("urls.jl")
 
 end

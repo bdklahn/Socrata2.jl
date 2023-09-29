@@ -1,6 +1,20 @@
-using Socrata2
-using Test
+using Socrata2, Test, URIs
+
+const dir = joinpath(dirname(pathof(Socrata2)), "..", "test")
+
+const test_endpoint1 = "healthdata.gov"
+const test_id1 = "anag-cw7u"
 
 @testset "Socrata2.jl" begin
-    # Write your tests here.
+    for f in [
+        "urls.jl",
+        ]
+        file = joinpath(dir, f)
+        println("Running $file tests...")
+        if isfile(file)
+            include(file)
+        else
+            @show readdir(dirname(file))
+        end
+    end
 end
