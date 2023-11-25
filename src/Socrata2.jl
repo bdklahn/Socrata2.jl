@@ -5,7 +5,6 @@ using HTTP
 using JSON3
 
 export metadata_url
-export endpoint_metadata_url
 export data_url
 export csv, json, geojson
 export get_metadata
