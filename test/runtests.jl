@@ -8,6 +8,7 @@ const test_id1 = "anag-cw7u"
 @testset "Socrata2.jl" begin
     for f in [
         "urls.jl",
+        "get.jl",
         ]
         file = joinpath(dir, f)
         println("Running $file tests...")
