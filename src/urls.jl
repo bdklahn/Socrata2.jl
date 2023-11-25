@@ -3,6 +3,8 @@
 """
 Return URI for data
 on an endpoint.
+See https://dev.socrata.com/docs/authentication.html
+for userinfo.
 """
 function data_url(endpoint::String, id::String="";
     userinfo::String="",
