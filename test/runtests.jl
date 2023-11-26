@@ -1,4 +1,4 @@
-using Socrata2, Test, URIs
+using Socrata2, Test, URIs, CSV, JSON3
 
 const dir = joinpath(dirname(pathof(Socrata2)), "..", "test")
 
