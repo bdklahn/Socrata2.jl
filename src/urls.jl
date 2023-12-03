@@ -18,7 +18,7 @@ function data_url(endpoint::String, id::String="";
         ;
         scheme="https",
         userinfo=userinfo,
-        host="$endpoint",
+        host=endpoint,
         path=path,
         )
 end
