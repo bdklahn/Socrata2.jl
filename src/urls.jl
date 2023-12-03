@@ -2,11 +2,11 @@
 
 """
 Return URI for data
-on an endpoint.
+on an domain.
 See https://dev.socrata.com/docs/authentication.html
 for userinfo.
 """
-function data_url(endpoint::String, id::String="";
+function data_url(domain::String, id::String="";
     userinfo::String="",
     path::String="/resource",
     suffix::SUFFIX=csv
@@ -18,17 +18,17 @@ function data_url(endpoint::String, id::String="";
         ;
         scheme="https",
         userinfo=userinfo,
-        host=endpoint,
+        host=domain,
         path=path,
         )
 end
 
 """
-Return the metadata URI for a dataset or endpoint.
+Return the metadata URI for a dataset or domain.
 """
-function metadata_url(endpoint::String, id::String=""; userinfo::String="")
+function metadata_url(domain::String, id::String=""; userinfo::String="")
     data_url(
-        endpoint, id;
+        domain, id;
         userinfo=userinfo,
         path="/api/views/metadata/v1",
         suffix=json,
