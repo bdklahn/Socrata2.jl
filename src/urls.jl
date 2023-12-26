@@ -1,36 +1,17 @@
+@enum API catalog resource metadata revision config permissions
 @enum SUFFIX csv json geojson
+const vers = "v1"
 
-"""
-Return URI for data
-on an domain.
-See https://dev.socrata.com/docs/authentication.html
-for userinfo.
-"""
-function data_url(domain::String, id::String="";
-    userinfo::String="",
-    path::String="/resource",
-    suffix::SUFFIX=csv
+function url(domain::String, id::String="";
+    api::API=resource, suffix::SUFFIX=json, kwargs...
     )
+    a, s = string(api), string(suffix)
+    api_path = 
+    api === resource && id != "" ?       joinpath("/resource", "$id.$s") :
+    api === metadata ?                   joinpath("/api/views", a, vers, id) :
+    api === revision || api === config ? joinpath("/api/publishing", vers, a) :
+    api === permissions ?                joinpath("/api/views", id, a) :
+                                         joinpath("/catalog", vers)
 
-    path = !isempty(id) ? joinpath(path, "$(id).$suffix") : path
-
-    URI(
-        ;
-        scheme="https",
-        userinfo=userinfo,
-        host=domain,
-        path=path,
-        )
-end
-
-"""
-Return the metadata URI for a dataset or domain.
-"""
-function metadata_url(domain::String, id::String=""; userinfo::String="")
-    data_url(
-        domain, id;
-        userinfo=userinfo,
-        path="/api/views/metadata/v1",
-        suffix=json,
-        )
+    URI(;scheme="https", host=domain, path=api_path,)
 end
