@@ -9,12 +9,12 @@ function url(domain::String, id::String="";
     j, a, s = joinpath, string(api), string(suffix)
 
     path =
-    api === resource && id != "" ?    j("/resource", "$id.$s") :
-    api === metadata ?                j("/api/views", a, v, id) :
-    api === colmetadata && id != "" ? j("/api/views", id) :
-    api in (revision, config) ?       j("/api/publishing", v, a) :
-    api === permissions ?             j("/api/views", id, a) :
-                                      j("/catalog", v)
+    api === resource && id != "" ?     j("/resource", "$id.$s") :
+    api === metadata ?                 j("/api/views", a, v, id) :
+    api === viewmetadata && id != "" ? j("/api/views", id) :
+    api in (revision, config) ?        j("/api/publishing", v, a) :
+    api === permissions ?              j("/api/views", id, a) :
+                                       j("/catalog", v)
 
     if !isempty(kwargs)
         query *= "&$(escapeuri(kwargs))"

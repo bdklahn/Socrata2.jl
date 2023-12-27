@@ -1,7 +1,7 @@
 struct DataSet
     data::Union{JSON3.Object,JSON3.Array,CSV.File}
     metadata::JSON3.Object
-    colmetadata::JSON3.Object
+    viewmetadata::JSON3.Object
 end
 
 """
@@ -15,7 +15,6 @@ function get_data(domain, id;
     )
     if userinfo != "" push!(headers, "Authorization" => "Basic $userinfo") end
     @show this_url = url(domain, id;suffix, kwargs...)
-    # @show this_url
     suffix == csv ? CSV.File(HTTP.get(this_url; headers).body, downcast=true) :
                     JSON3.read(HTTP.get(this_url; headers).body)
 end
@@ -26,15 +25,26 @@ function get_dataset(domain, id;
     DataSet(
         get_data(domain, id; userinfo, headers, suffix, kwargs...),
         get_data(domain, id; userinfo, headers, suffix=json, api=metadata,kwargs...),
-        get_data(domain, id; userinfo, headers, suffix=json, api=colmetadata,kwargs...)
+        get_data(domain, id; userinfo, headers, suffix=json, api=viewmetadata,kwargs...)
     )
 end
 
 function save(dataset::DataSet, outdir::String="./"; arrow::Bool=false)
-    (;data, metadata, colmetadata) = dataset
+    (;data, metadata, viewmetadata) = dataset
     filepath = joinpath(outdir, "$(metadata[:domain]).$(metadata[:id])")
     if arrow && isa(data, CSV.File)
-        Arrow.write("$filepath.arrow", data)
+        viewmetadata = Dict(viewmetadata)
+        columns = pop!(viewmetadata, :columns)
+        colmetadata = Dict()
+        for col in columns
+            col = Dict(col)
+            key = Symbol(pop!(col, :fieldName))
+            colmetadata[key] = to_string_pairs(col)
+        end
+        metadata = to_string_pairs(
+            merge(viewmetadata, metadata)
+            )
+        Arrow.write("$filepath.arrow", data; colmetadata, metadata)
     else
         if isa(data, CSV.File)
             CSV.write("$filepath.csv", data)
@@ -43,11 +53,8 @@ function save(dataset::DataSet, outdir::String="./"; arrow::Bool=false)
                 JSON3.pretty(io, data)
             end
         end
-        for name in ("metadata", "colmetadata")
-            eval(:(dta = $name))
-            open("$(filepath)_$name.json", "w") do io
-                JSON3.pretty(io, dta)
-            end
+        open("$(filepath)_metadata.json", "w") do io
+            JSON3.pretty(io, merge(viewmetadata, metadata))
         end
     end
 end
